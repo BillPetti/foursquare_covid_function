@@ -25,8 +25,8 @@ date = Sys.Date()-2
 If you want all the state-level, grouped data, you would run:
 
 ```
-foursquare_covid_data(aggregate = 'state', 
-                      type = 'grouped') %>%
+acuire_foursquare_covid_data(aggregate = 'state', 
+                             type = 'grouped') %>%
   head()
   
 # A tibble: 6 x 7
@@ -42,9 +42,9 @@ foursquare_covid_data(aggregate = 'state',
 For the same type of data, but at the county level, simply change the `aggregate` arugment and note what state to pull from:
 
 ```
-foursquare_covid_data(aggregate = 'county', 
-                      type = 'grouped', 
-                      state = 'New Jersey) %>%
+acuire_foursquare_covid_data(aggregate = 'county', 
+                             type = 'grouped', 
+                             state = 'New Jersey) %>%
   head()
   
 # A tibble: 6 x 8
@@ -60,9 +60,9 @@ foursquare_covid_data(aggregate = 'county',
 The data will include all dates from 2020-03-01 to whatever end date you choose. This allows you do create trend charts:
 
 ```
-foursquare_covid_data(aggregate = 'state', 
-                      type = 'grouped', 
-                      state = 'New Jersey') %>%
+acuire_foursquare_covid_data(aggregate = 'state', 
+                             type = 'grouped', 
+                             state = 'New Jersey') %>%
   filter(category == 'Grocery') %>%
   gather(age_group, scaled_traffic, c(all_ages:over_65)) %>% 
   ggplot(aes(date, scaled_traffic)) +
