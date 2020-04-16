@@ -1,4 +1,4 @@
-acuire_foursquare_covid_data <- function(aggregate = 'state', 
+acquire_foursquare_covid_data <- function(aggregate = 'state', 
                                   type = 'grouped', 
                                   state_name = NA, 
                                   date = Sys.Date()-2) {
