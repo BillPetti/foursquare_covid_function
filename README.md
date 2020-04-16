@@ -72,7 +72,7 @@ foursquare_covid_data(aggregate = 'state',
        y = 'Foot Traffic (100 = February Average)') +
   theme_classic()
 ```
-![img]('https://github.com/BillPetti/foursquare_covid_function/blob/master/ex_chart.png?raw=true')
+![img]('https://raw.githubusercontent.com/BillPetti/foursquare_covid_function/master/ex_chart.png')
 
 
 
