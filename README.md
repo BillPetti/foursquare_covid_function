@@ -7,7 +7,7 @@ You can import the function into your environment by running:
 
 You must have the following packages installed: `vroom`, `stringr`, `dplyr`
 
-This is a function for downloading foot traffic data made available by Foursquare at the state and county levels that powers the dashboard at [https://visitdata.org/index.html](https://visitdata.org/index.html). The data is indexed so that 100 = average traffic for that day of the week in February 2020. They provide data that is grouped or raw--grouped takes the more detailed location categories and groups them into roughly 25 aggregate categories. 
+This is a function for downloading foot traffic data made available by Foursquare at the state and county levels that powers the dashboard at [https://visitdata.org/index.html](https://visitdata.org/index.html). The data is indexed so that 100 = average traffic for that day of the week in February 2020. They provide data that is grouped or raw--grouped takes the more detailed location categories and groups them into roughly 25 aggregate categories. The data will also return three cuts of the data based on age: `all_ages`, `over_65`, `under_65`
 
 There are four arguments that function takes, with their defaults:
 
@@ -72,13 +72,7 @@ foursquare_covid_data(aggregate = 'state',
        y = 'Foot Traffic (100 = February Average)') +
   theme_classic()
 ```
-![img]('https://raw.githubusercontent.com/BillPetti/foursquare_covid_function/master/ex_chart.png')
+![sample chart](https://raw.githubusercontent.com/BillPetti/foursquare_covid_function/master/ex_chart.png "")
 
-
-
-
-
-
-You can grab all the state level data at once (just leave the state_num argument blank). They didn't aggregate a county level file, but you can just map over a list of state names to get it all in one shot. Make sure you have the vroom package installed and tidyverse loaded. Let me know if you have any questions:
 
  
