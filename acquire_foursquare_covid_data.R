@@ -1,9 +1,8 @@
 acquire_foursquare_covid_data <- function(aggregate = 'state',
                                           type = 'grouped',
-                                          state_name = NA,
-                                          date = Sys.Date()-2) {
+                                          state_name = NA) {
 
-  date <- gsub('-', '', as.character(date))
+  #date <- gsub('-', '', as.character(date))
 
   if (aggregate != 'state' & is.na(state_name))
 
