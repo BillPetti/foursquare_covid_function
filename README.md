@@ -3,7 +3,7 @@ Function for pulling public, COVID-19 related Foursquare foot traffic data in R
 
 You can import the function into your environment by running:
 
-`source('https://raw.githubusercontent.com/BillPetti/foursquare_covid_function/master/acquire_foursquare_covid_data')`
+`source('https://raw.githubusercontent.com/BillPetti/foursquare_covid_function/master/acquire_foursquare_covid_data.R')`
 
 You must have the following packages installed: `vroom`, `stringr`, `dplyr`
 
