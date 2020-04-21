@@ -15,12 +15,10 @@ There are four arguments that function takes, with their defaults:
 aggregate = 'state'
 type = 'grouped'
 state_name = NA
-date = Sys.Date()-2
 ```
 - `aggregate`: indicates if the data should be at the state or state-county level
 - `type`: indicates whether to return 
 - `state_name`: if left `NA`, all states are returned. If a state is names, only data for that state will be returned. 
-- `date`: the latest date to pull. Data appears to update in the evening, so the default is for two days prior
 
 If you want all the state-level, grouped data, you would run:
 
