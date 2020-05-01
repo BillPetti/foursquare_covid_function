@@ -1,10 +1,15 @@
 acquire_foursquare_covid_data <- function(aggregate = 'state',
                                           type = 'grouped',
-                                          state_name = NA) {
+                                          state_name = NA,
+                                          index = FALSE) {
 
   if (aggregate != 'state')
 
     stop(message('Due to the change in the data structure, County level data cannot be pulled with this function at this time'))
+
+  if (index == TRUE)
+
+    message('Data will be indexed based on the average traffic for the given day of the week across February. Only datat for all demographics will be returned.')
 
   fsqr_state_names <- c("Alabama", "Alaska", "Arizona",
                         "Arkansas", "California", "Colorado", "Connecticut", "Delaware",
@@ -17,6 +22,27 @@ acquire_foursquare_covid_data <- function(aggregate = 'state',
                         "SouthCarolina", "SouthDakota", "Tennessee", "Texas", "Utah",
                         "Vermont", "Virginia", "Washington", "WashingtonDC", "WestVirginia",
                         "Wisconsin", "Wyoming")
+
+  scale_fs_data <- function(payload) {
+
+    anchor <- payload %>%
+      filter(demo == "All") %>%
+      mutate(day_number = lubridate::wday(date)) %>%
+      filter(date <= '2020-02-29') %>%
+      group_by(state, categoryname, day_number) %>%
+      summarise(avg_traffic = mean(visits)) %>%
+      ungroup()
+
+    payload_indexed <- payload %>%
+      filter(demo == "All") %>%
+      mutate(day_number = lubridate::wday(date)) %>%
+      left_join(anchor, by = c('state', 'day_number', 'categoryname')) %>%
+      mutate(index_visits = round(100 * (visits/avg_traffic))) %>%
+      group_by(state, categoryname, day_number) %>%
+      mutate(visits_7_day_roll_ave = zoo::rollapply(index_visits, 7, mean, align = 'right', fill = NA))
+
+    return(payload_indexed)
+  }
 
   grouped_fsqr <- function(state) {
 
@@ -61,6 +87,14 @@ acquire_foursquare_covid_data <- function(aggregate = 'state',
       map('result') %>%
       bind_rows()
 
+    if (index == TRUE) {
+
+      message('Indexing data...')
+
+      payload <- scale_fs_data(payload)
+
+    }
+
   } else if (aggregate == 'state' & type == 'raw' & is.na(state_name)) {
 
     payload <- purrr::map(.x = fsqr_state_names,
@@ -69,6 +103,14 @@ acquire_foursquare_covid_data <- function(aggregate = 'state',
     payload <- payload %>%
       map('result') %>%
       bind_rows()
+
+    if (index == TRUE) {
+
+      message('Indexing data...')
+
+      payload <- scale_fs_data(payload)
+
+    }
 
   } else if (aggregate != 'state' & type == 'grouped') {
 
