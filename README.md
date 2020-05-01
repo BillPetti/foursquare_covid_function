@@ -1,11 +1,13 @@
 # foursquare_covid_function
+***Please note that due to a change in Foursquare's data structure the function has been refactored, but only works for state-level data. I will be making additional changes soon, but for now you can pull all states grouped and raw data, but nothing else.***
+
 Function for pulling public, COVID-19 related Foursquare foot traffic data in R
 
 You can import the function into your environment by running:
 
 `source('https://raw.githubusercontent.com/BillPetti/foursquare_covid_function/master/acquire_foursquare_covid_data.R')`
 
-You must have the following packages installed: `vroom`, `stringr`, `dplyr`
+You must have the following packages installed: `vroom`, `purrr`, `stringr`, `dplyr`
 
 This is a function for downloading foot traffic data made available by Foursquare at the state and county levels that powers the dashboard at [https://visitdata.org/index.html](https://visitdata.org/index.html). The data is indexed so that 100 = average traffic for that day of the week in February 2020. They provide data that is grouped or raw--grouped takes the more detailed location categories and groups them into roughly 25 aggregate categories. The data will also return three cuts of the data based on age: `all_ages`, `over_65`, `under_65`
 
