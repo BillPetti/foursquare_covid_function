@@ -39,7 +39,8 @@ acquire_foursquare_covid_data <- function(aggregate = 'state',
       left_join(anchor, by = c('state', 'day_number', 'categoryname')) %>%
       mutate(index_visits = round(100 * (visits/avg_traffic))) %>%
       group_by(state, categoryname, day_number) %>%
-      mutate(visits_7_day_roll_ave = zoo::rollapply(index_visits, 7, mean, align = 'right', fill = NA))
+      mutate(visits_7_day_roll_ave = zoo::rollapply(index_visits, 7, mean, align = 'right', fill = NA)) %>%
+      ungroup()
 
     return(payload_indexed)
   }
