@@ -218,7 +218,13 @@ acquire_foursquare_covid_data <- function(aggregate = 'state',
 
     payload <- map_county_files
 
-    payload <- scale_fs_data(payload)
+    if (index == TRUE) {
+
+      message('Indexing data...')
+
+      payload <- scale_fs_data(payload)
+
+    }
 
   }
 

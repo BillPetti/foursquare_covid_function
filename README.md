@@ -1,5 +1,4 @@
 # foursquare_covid_function
-***Please note that due to a change in Foursquare's data structure the function has been refactored, but only works for state-level data. I will be making additional changes soon, but for now you can pull all states grouped and raw data, but nothing else.***
 
 Function for pulling public, COVID-19 related Foursquare foot traffic data in R
 
@@ -17,10 +16,12 @@ There are four arguments that function takes, with their defaults:
 aggregate = 'state'
 type = 'grouped'
 state_name = NA
+index = FALSE
 ```
 - `aggregate`: indicates if the data should be at the state or state-county level
 - `type`: indicates whether to return 
 - `state_name`: if left `NA`, all states are returned. If a state is names, only data for that state will be returned. 
+- `index`: whether to add an indexed version of the visit data. Foursquare previously included this, but changed to raw visits in May.
 
 If you want all the state-level, grouped data, you would run:
 
@@ -29,48 +30,49 @@ acquire_foursquare_covid_data(aggregate = 'state',
                               type = 'grouped') %>%
   head()
   
-# A tibble: 6 x 7
-  date       state   category              all_ages under_65 over_65 cat_num
-  <date>     <chr>   <chr>                    <dbl>    <dbl>   <dbl>   <dbl>
-1 2020-03-01 Alabama Food                       109      104     109       1
-2 2020-03-01 Alabama Shops & Services           115      102     115       2
-3 2020-03-01 Alabama Gas Stations               110      109     110       3
-4 2020-03-01 Alabama Big Box Stores             108      104     108       4
-5 2020-03-01 Alabama Grocery                     99       92      99       5
-6 2020-03-01 Alabama Fast Food Restaurants      115      115     115       6
+# A tibble: 6 x 9
+  date       state   county categoryid categoryname demo    visits avgDuration p50Duration
+  <date>     <chr>   <lgl>  <chr>      <chr>        <chr>    <dbl>       <dbl>       <dbl>
+1 2020-02-01 Alabama NA     Group      Airport      Above65   1828         127          NA
+2 2020-02-01 Alabama NA     Group      Airport      All      34994          92          NA
+3 2020-02-01 Alabama NA     Group      Airport      Below65  33166          90          NA
+4 2020-02-01 Alabama NA     Group      Alcohol      Above65   1586          33          NA
+5 2020-02-01 Alabama NA     Group      Alcohol      All      36445          39          NA
+6 2020-02-01 Alabama NA     Group      Alcohol      Below65  34859          39          NA
 ```
-For the same type of data, but at the county level, simply change the `aggregate` arugment and note what state to pull from:
+For the same type of data, but at the county level, simply change the `aggregate` arugment and note what state to pull from. The data will return the high-level, grouped categories and the raw categories:
 
 ```
 acquire_foursquare_covid_data(aggregate = 'county', 
                               type = 'grouped', 
-                              state = 'New Jersey) %>%
+                              state_name = 'New Jersey') %>%
   head()
   
-# A tibble: 6 x 8
-  date       state      county       category              all_ages under_65 over_65 cat_num
-  <date>     <chr>      <chr>        <chr>                    <dbl>    <dbl>   <dbl>   <dbl>
-1 2020-03-01 New Jersey Union County Food                       105      102     105       1
-2 2020-03-01 New Jersey Union County Shops & Services           109      104     109       2
-3 2020-03-01 New Jersey Union County Airport                     92      108      92       3
-4 2020-03-01 New Jersey Union County Grocery                    102      106     102       4
-5 2020-03-01 New Jersey Union County Outdoors & Recreation       92      104      92       5
-6 2020-03-01 New Jersey Union County Nightlife Spots             98       NA      98       6
+# A tibble: 6 x 9
+  date       state   county    categoryid      categoryname demo  visits avgDuration p50Duration
+  <date>     <chr>   <chr>     <chr>           <chr>        <chr>  <dbl>       <dbl>       <dbl>
+1 2020-02-01 New Je… Atlantic… 4bf58dd8d48988… Clothing St… Abov…    405          15          NA
+2 2020-02-01 New Je… Atlantic… 4bf58dd8d48988… Clothing St… All     7565          21          14
+3 2020-02-01 New Je… Atlantic… 4bf58dd8d48988… Clothing St… Belo…   7160          22          NA
+4 2020-02-01 New Je… Atlantic… 4bf58dd8d48988… Banks        Abov…   1809          19          NA
+5 2020-02-01 New Je… Atlantic… 4bf58dd8d48988… Banks        All     9194          20           8
+6 2020-02-01 New Je… Atlantic… 4bf58dd8d48988… Banks        Belo…   7386          21          NA
+
 ```
-The data will include all dates from 2020-03-01 to whatever end date you choose. This allows you do create trend charts:
+The data will include all dates from 2020-02-01 to whatever end date you choose. This allows you do create trend plots:
 
 ```
 acquire_foursquare_covid_data(aggregate = 'state', 
                               type = 'grouped', 
-                              state = 'New Jersey') %>%
-  filter(category == 'Grocery') %>%
-  gather(age_group, scaled_traffic, c(all_ages:over_65)) %>% 
-  ggplot(aes(date, scaled_traffic)) +
-  geom_line(aes(color = age_group)) +
-  labs(title = 'Grocery Store Foot Traffic for New Jersey\n', 
-       x = 'Date', 
-       y = 'Foot Traffic (100 = February Average)') +
-  theme_classic()
+                              index = T) %>%
+    filter(categoryname == 'Grocery')
+    filter(state %in% c('New Jersey', 'New York', 'Iowa', 'Washington')) %>%
+    ggplot(aes(date, visits_7_day_roll_ave)) +
+    geom_line(aes(color = state)) +
+    labs(title = 'Grocery Store Foot Traffic for New Jersey\n', 
+         x = 'Date', 
+         y = 'Foot Traffic (100 = February Average)') +
+    theme_classic()
 ```
 ![sample chart](https://raw.githubusercontent.com/BillPetti/foursquare_covid_function/master/ex_chart.png "")
 
